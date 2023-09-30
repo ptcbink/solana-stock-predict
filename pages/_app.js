@@ -6,6 +6,7 @@ import {
 } from "@solana/wallet-adapter-react";
 import { WalletModalProvider } from "@solana/wallet-adapter-react-ui";
 import { PhantomWalletAdapter } from "@solana/wallet-adapter-wallets";
+import { GlobalState } from "../state/global";
 import "../styles/globals.css";
 import "@solana/wallet-adapter-react-ui/styles.css";
 function MyApp({ Component, pageProps }) {
@@ -21,7 +22,12 @@ function MyApp({ Component, pageProps }) {
     <ConnectionProvider endpoint={RPC_ENDPOINT} config={{commitment: "confirmed"}}>
       <WalletProvider wallets={waLLets} autoConnect>
         <WalletModalProvider>
-          {mounted && <Component {...pageProps} />}
+          {mounted && (
+            <GlobalState>
+            <Component {...pageProps} />
+            </GlobalState>
+            )
+          }
         </WalletModalProvider>
       </WalletProvider>
     </ConnectionProvider>

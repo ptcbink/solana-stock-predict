@@ -1,0 +1,132 @@
+{
+  "version": "0.1.0",
+  "name": "prediction_dapp",
+  "instructions": [
+    {
+      "name": "createMaster",
+      "accounts": [
+        { "name": "master", "isMut": true, "isSigner": false },
+        { "name": "payer", "isMut": true, "isSigner": true },
+        { "name": "systemProgram", "isMut": false, "isSigner": false }
+      ],
+      "args": []
+    },
+    {
+      "name": "createBet",
+      "accounts": [
+        { "name": "bet", "isMut": true, "isSigner": false },
+        { "name": "master", "isMut": true, "isSigner": false },
+        { "name": "player", "isMut": true, "isSigner": true },
+        { "name": "systemProgram", "isMut": false, "isSigner": false }
+      ],
+      "args": [
+        { "name": "amount", "type": "u64" },
+        { "name": "price", "type": "f64" },
+        { "name": "duration", "type": "u32" },
+        { "name": "pythPriceKey", "type": "publicKey" }
+      ]
+    },
+    {
+      "name": "enterBet",
+      "accounts": [
+        { "name": "bet", "isMut": true, "isSigner": false },
+        { "name": "player", "isMut": true, "isSigner": true },
+        { "name": "systemProgram", "isMut": false, "isSigner": false }
+      ],
+      "args": [{ "name": "price", "type": "f64" }]
+    },
+    {
+      "name": "claimBet",
+      "accounts": [
+        { "name": "bet", "isMut": true, "isSigner": false },
+        { "name": "pyth", "isMut": false, "isSigner": false },
+        { "name": "playerA", "isMut": true, "isSigner": false },
+        { "name": "playerB", "isMut": true, "isSigner": false },
+        { "name": "signer", "isMut": true, "isSigner": true },
+        { "name": "systemProgram", "isMut": false, "isSigner": false }
+      ],
+      "args": []
+    },
+    {
+      "name": "closeBet",
+      "accounts": [
+        { "name": "bet", "isMut": true, "isSigner": false },
+        { "name": "player", "isMut": true, "isSigner": true },
+        { "name": "systemProgram", "isMut": false, "isSigner": false }
+      ],
+      "args": []
+    }
+  ],
+  "accounts": [
+    {
+      "name": "Master",
+      "type": {
+        "kind": "struct",
+        "fields": [{ "name": "lastBetId", "type": "u64" }]
+      }
+    },
+    {
+      "name": "Bet",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          { "name": "id", "type": "u64" },
+          { "name": "amount", "type": "u64" },
+          { "name": "predictionA", "type": { "defined": "BetPrediction" } },
+          {
+            "name": "predictionB",
+            "type": { "option": { "defined": "BetPrediction" } }
+          },
+          { "name": "state", "type": { "defined": "BetState" } },
+          { "name": "pythPriceKey", "type": "publicKey" },
+          { "name": "expiryTs", "type": "i64" }
+        ]
+      }
+    }
+  ],
+  "types": [
+    {
+      "name": "BetPrediction",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          { "name": "player", "type": "publicKey" },
+          { "name": "price", "type": "f64" }
+        ]
+      }
+    },
+    {
+      "name": "BetState",
+      "type": {
+        "kind": "enum",
+        "variants": [
+          { "name": "Created" },
+          { "name": "Started" },
+          { "name": "PlayerAWon" },
+          { "name": "PlayerBWon" },
+          { "name": "Draw" }
+        ]
+      }
+    }
+  ],
+  "errors": [
+    { "code": 6000, "name": "CannotEnter", "msg": "Cannot Enter" },
+    { "code": 6001, "name": "CannotClaim", "msg": "Cannot Enter" },
+    { "code": 6002, "name": "CannotClose", "msg": "Cannot Close" },
+    {
+      "code": 6003,
+      "name": "InvalidPythKey",
+      "msg": "Given Key for the Pyth account does not match"
+    },
+    {
+      "code": 6004,
+      "name": "InvalidPythAccount",
+      "msg": "Invalid Pyth account"
+    },
+    {
+      "code": 6005,
+      "name": "PriceTooBig",
+      "msg": "Price is too big to parse to u32"
+    }
+  ]
+}

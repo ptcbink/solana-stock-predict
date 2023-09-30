@@ -17,7 +17,7 @@ import CustomModal from "../components/CustomModal";
 // SOLANA IMPORTS
 import { LAMPORTS_PER_SOL, PublicKey } from "@solana/web3.js";
 import { BN } from "@project-serum/anchor";
-import { useGlobalState } from "../hooks";
+import { useGlobalState } from "../hooks/useGlobalState";
 
 
 //Styles
@@ -86,6 +86,9 @@ const Home = () => {
   const staticCreatebet = () => {
     console.log("Creating bet")
   }
+
+  const {connected} = useGlobalState();
+  console.log(connected, "Hello World")
 
   return (
     <div className={styles.wrapper}>
