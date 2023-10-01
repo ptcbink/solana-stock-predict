@@ -4,11 +4,11 @@ import { PublicKey } from "@solana/web3.js";
 import { MINIMUM_REMAINING_TIME_UNITL_EXPIRY, PROGRAM__ID } from "./constants";
 
 // Create a ficntion that gets the solana program we created
-export const getPrgram = (connection, waLLet) => {
+export const getPrgram = (connection, wallet) => {
     const IDL = require("./idl.json");
     const provider = new AnchorProvider(
         connection,
-        waLLet,
+        wallet,
         AnchorProvider.defaultOptions()
     )
     const program  = new Program(IDL, PROGRAM__ID,provider)
@@ -21,7 +21,7 @@ const getProgramAccountPk = async (seeds) => {
 }
 
 export const getMasterAccountPk = async() => {
-    return await getMasterAccountPk([Buffer.from("master")]);
+    return await getProgramAccountPk([Buffer.from("master")]);
 }
 
 export const getBetAccountPk = async(id) => {

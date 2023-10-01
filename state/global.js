@@ -21,13 +21,61 @@ export const GlobalState = ({children}) => {
     const [userBets, setUserBets] = useState();
 
     const {connection} = useConnection();
-    const waLLets = useAnchorWallet();
+    const waLLet = useAnchorWallet();
 
-    let conncted = true;
+    // Set Program
+    useEffect(() => {
+        if(connection) {
+            setProgram(getPrgram(connection, waLLet ?? {}))
+        } else{
+            setProgram(null);
+        }
+    }, [connection,waLLet])
+
+    //Check wallet connection
+    useEffect(() => {
+        setIsConnected(!!waLLet?.publicKey)
+    }, [waLLet]);
+
+    const fetchMasterAccount = useCallback(async () => {
+        if(!program) return;
+        try{
+            const masterAccountPk = await getMasterAccountPk();
+            const masterAccount = await program.account.master.fetch(masterAccountPk);
+            setMasterAccount(masterAccount);
+        } catch(e){
+            console.log("could not fetch master account: ", e.message);
+            setMasterAccount(null);
+        }
+    }) 
+
+    // check for master account
+    useEffect(() => {
+        if(!masterAccount && program) {
+            fetchMasterAccount();
+        }
+    }, [masterAccount, program])
+
+    const fetchBets = useCallback(async () => {
+        if(!program) return;
+        const allBetsResult = await program.account.bet.all();
+        const allBets = allBetsResult.map((bet) => bet.account);
+        setAllBets(allBets);
+    }, [program])
+
+    useEffect(() => {
+        // fetch all bets if allbets doesn't exist.
+        if(!allBets){
+            fetchBets();
+        }
+    }, [allBets, fetchBets])
 
     return (
         <GlobalContext.Provider
-        value={{conncted}}
+        value={{
+            masterAccount,
+            allBets,
+        }}
         >
             {children}
         </GlobalContext.Provider>

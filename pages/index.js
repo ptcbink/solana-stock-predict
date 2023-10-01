@@ -87,8 +87,8 @@ const Home = () => {
     console.log("Creating bet")
   }
 
-  const {connected} = useGlobalState();
-  console.log(connected, "Hello World")
+  const {allBets} = useGlobalState();
+  console.log(allBets, "Hello World")
 
   return (
     <div className={styles.wrapper}>
