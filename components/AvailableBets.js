@@ -23,10 +23,8 @@ const AvailableBets = ({
   setShowModal,
 }) => {
 
-
-
-  // Static
-  const allBets = []
+  const {allBets} = useGlobalState();
+ 
 
   const staticCloseBet = () => {
     console.log("Closing bet")

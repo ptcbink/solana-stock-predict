@@ -70,11 +70,59 @@ export const GlobalState = ({children}) => {
         }
     }, [allBets, fetchBets])
 
+    const createBet = useCallback(
+        async(amount, price, duration, pythPrice) => {
+            if(!masterAccount) return;
+
+            try{
+                const betId = masterAccount.lastBetId.addn(1);
+                const res = await getBetAccountPk(betId);
+                console.log({betPk: res});
+                const txHash = await program.methods
+                .createBet(amount, price, duration, pythPrice)
+                .accounts({
+                    bet: await getBetAccountPk(betId),
+                    master: await getMasterAccountPk(),
+                    player: waLLet.publicKey,
+                })
+                .rpc()
+                await connection.confirmTransaction(txHash);
+                console.log("Created bet!", txHash);
+                toast.success("Created bet!")
+            } catch(e) {
+                toast.error("Failed to create bet!");
+                console.log(e.message);
+            }
+        },
+        [masterAccount]
+    )
+
+    const closeBet = useCallback(
+        async(bet) => {
+            if(!masterAccount) return;
+
+            try{
+                const txHash = await program.methods
+                .closeBet()
+                .accounts({
+                    bet: await getBetAccountPk(bet.id),
+                    player: waLLet.publicKey
+                })
+                .rpc()
+            toast.success("Closed Bet")
+            } catch(e) {
+                toast.error("Failed to close bet")
+                console.log("Could not close bet", e.message);
+            }
+        }
+    )
+
     return (
         <GlobalContext.Provider
         value={{
             masterAccount,
             allBets,
+            createBet,
         }}
         >
             {children}

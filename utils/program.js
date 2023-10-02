@@ -27,6 +27,6 @@ export const getMasterAccountPk = async() => {
 export const getBetAccountPk = async(id) => {
     return await getProgramAccountPk([
         Buffer.from("bet"),
-        new BN(id).toArrayLike(Buffer, "le", 9)
+        new BN(id).toArrayLike(Buffer, "le", 8)
     ])
 }
