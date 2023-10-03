@@ -1,5 +1,5 @@
-#This is a Stock Prediction application.
-
+## Stock Prediction application.
+Solana Stock Prediction App, a cutting-edge decentralized application (DApp) built on the lightning-fast Solana blockchain.
 ## Getting Started
 
 First, run the development server:
