@@ -114,7 +114,51 @@ export const GlobalState = ({children}) => {
                 toast.error("Failed to close bet")
                 console.log("Could not close bet", e.message);
             }
-        }
+        },[masterAccount]
+    )
+    const enterBet = useCallback(
+        async(price, bet) => {
+            if(!masterAccount) return;
+
+            try{
+                const txHash = await program.methods
+                .enterBet(price)
+                .accounts({
+                    bet: await getBetAccountPk(bet.id),
+                    player: waLLet.publicKey
+                })
+                .rpc();
+                toast.success("Entered Bet!");
+            }
+            catch(e) {
+                console.log("Couldn't enter bet", e.message);
+                toast.error("Failed to enter bet!");
+            }
+        },[masterAccount]
+    )
+
+    const claimBet = useCallback(
+        async(bet) => {
+            if(!masterAccount) return;
+
+            try{
+                const txHash = await program.methods
+                .claimBet()
+                .account({
+                    bet: await getBetAccountPk(bet.id),
+                    pyth: bet.pythPriceKey,
+                    playerA: bet.predictionA.player,
+                    playerB: bet.predictionB.player,
+                    signer: waLLet.publicKey,
+                })
+                .rpc()
+                console.log("Claimed Bet");
+            }
+            catch(e){
+                console.log("Couldn't claim", e.message);
+                toast.error("Failed to claim");
+            }
+        },[masterAccount]
     )
 
     return (
@@ -123,6 +167,9 @@ export const GlobalState = ({children}) => {
             masterAccount,
             allBets,
             createBet,
+            closeBet,
+            enterBet,
+            claimBet,
         }}
         >
             {children}

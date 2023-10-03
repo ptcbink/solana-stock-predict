@@ -23,15 +23,8 @@ const AvailableBets = ({
   setShowModal,
 }) => {
 
-  const {allBets} = useGlobalState();
+  const {allBets, closeBet, claimBet} = useGlobalState();
  
-
-  const staticCloseBet = () => {
-    console.log("Closing bet")
-  }
-  const staticClaimBet = () => {
-    console.log("Claiming bet")
-  }
 
   return (
     <div className={styles.availableBetsContainer}>
@@ -52,9 +45,25 @@ const AvailableBets = ({
               <p className={styles.currentStockPriceAmount}>{getSolAmount(bet.amount)} SOL</p>
             </div>
             {console.log(Object.keys(bet.state)[0].toUpperCase())}
+            {/* Have button that changes depending on the state of the bet */}
+            {Object.keys(bet.state)[0].toLocaleUpperCase() == 'STARTED' ? 
+            <div className={styles.button} onClick={claimBet(bet)}>CLAIM</div>
+            :
+            Object.keys(bet.state)[0].toLocaleUpperCase() == 'PLAYERAWON' ?
+            <div className={styles.availableBetsTitle}>
+              PLAYER A WON
+            </div>
+            :
+            Object.keys(bet.state)[0].toLocaleUpperCase() == 'PLAYERBWON' ?
+            <div className={styles.availableBetsTitle}>
+              PLAYER B WON
+            </div>
+            :
+            <div className={styles.button} onClick={() => {setSelectedBet(bet); setShowModal(true);}}>ENTER</div>
+            }
 
             <IoMdClose className="hover:text-[#ffffff] text-2xl mr-4"
-              onClick={() => staticCloseBet(bet)}
+              onClick={() => closeBet(bet)}
             />
           </div>
         );
