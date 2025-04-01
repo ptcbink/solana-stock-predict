@@ -1,4 +1,5 @@
 # **Solana Stock Predict** - A Decentralized Prediction Market Game
+![Screenshot_2](https://github.com/user-attachments/assets/4d03865e-88dc-47ec-8f08-ab718377ba9f)
 
 Decentralized prediction market game that allows users to wager on the future price movements of stocks, cryptocurrencies, and tokens. Built on the **Solana blockchain**
 
